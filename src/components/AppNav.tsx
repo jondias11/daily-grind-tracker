@@ -15,8 +15,9 @@ export function AppNav() {
     <header className="border-b bg-card">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <Link to="/" className="font-semibold tracking-tight">
-          NeetCode Tracker
+          SIP
         </Link>
+
         <nav className="flex gap-1 text-sm">
           {links.map((l) => (
             <Link
