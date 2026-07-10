@@ -21,34 +21,35 @@ function DayColumn({ date }: { date: string }) {
   const isToday = date === format(new Date(), "yyyy-MM-dd");
 
   return (
-    <Card
-      ref={setNodeRef}
-      className={cn(
-        "flex flex-col gap-2 p-3 min-h-[300px] transition-colors",
-        isOver && "ring-2 ring-primary",
-        isToday && "border-primary",
-      )}
-    >
-      <Link
-        to="/day/$date"
-        params={{ date }}
-        className="flex items-baseline justify-between text-sm font-medium hover:underline"
-      >
-        <span>{format(parsed, "EEE")}</span>
-        <span className="text-muted-foreground">{format(parsed, "MMM d")}</span>
-      </Link>
-      <div className="text-xs text-muted-foreground">
-        {problems.length} problems · {problems.reduce((a, p) => a + p.estMin, 0)}m
-      </div>
-      <div className="space-y-1.5">
-        {problems.map((p) => (
-          <ProblemCard key={p.id} problem={p} />
-        ))}
-        {problems.length === 0 && (
-          <p className="text-xs text-muted-foreground italic">Empty — drop here</p>
+    <div ref={setNodeRef}>
+      <Card
+        className={cn(
+          "flex flex-col gap-2 p-3 min-h-[300px] transition-colors",
+          isOver && "ring-2 ring-primary",
+          isToday && "border-primary",
         )}
-      </div>
-    </Card>
+      >
+        <Link
+          to="/day/$date"
+          params={{ date }}
+          className="flex items-baseline justify-between text-sm font-medium hover:underline"
+        >
+          <span>{format(parsed, "EEE")}</span>
+          <span className="text-muted-foreground">{format(parsed, "MMM d")}</span>
+        </Link>
+        <div className="text-xs text-muted-foreground">
+          {problems.length} problems · {problems.reduce((a, p) => a + p.estMin, 0)}m
+        </div>
+        <div className="space-y-1.5">
+          {problems.map((p) => (
+            <ProblemCard key={p.id} problem={p} />
+          ))}
+          {problems.length === 0 && (
+            <p className="text-xs text-muted-foreground italic">Empty — drop here</p>
+          )}
+        </div>
+      </Card>
+    </div>
   );
 }
 
