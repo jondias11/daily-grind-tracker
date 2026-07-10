@@ -77,11 +77,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "NeetCode Tracker" },
+      { title: "SIP" },
       { name: "description", content: "Track daily DSA problems, theory, ML, and project work with progress bars." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "NeetCode Tracker" },
+      { property: "og:title", content: "SIP" },
       { property: "og:description", content: "Track daily DSA problems, theory, ML, and project work with progress bars." },
+
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
