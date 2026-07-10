@@ -38,18 +38,15 @@ export const useStore = create<State>()(
       daily: {},
       targets: { dsaTheory: 60, ml: 60, project: 120 },
       setMinutes: (date, key, min) =>
-        set((s) => ({
-          daily: {
-            ...s.daily,
-            [date]: {
-              dsaTheoryMin: 0,
-              mlMin: 0,
-              projectMin: 0,
-              ...s.daily[date],
-              [key]: Math.max(0, min),
+        set((s) => {
+          const cur = s.daily[date] ?? { dsaTheoryMin: 0, mlMin: 0, projectMin: 0 };
+          return {
+            daily: {
+              ...s.daily,
+              [date]: { ...cur, [key]: Math.max(0, min) },
             },
-          },
-        })),
+          };
+        }),
       addMinutes: (date, key, delta) =>
         set((s) => {
           const cur = s.daily[date] ?? { dsaTheoryMin: 0, mlMin: 0, projectMin: 0 };
