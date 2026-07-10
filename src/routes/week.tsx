@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { addDays, format, parseISO, startOfWeek } from "date-fns";
 import { DndContext, useDroppable, type DragEndEvent } from "@dnd-kit/core";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AppNav } from "@/components/AppNav";
 import { ProblemCard } from "@/components/ProblemCard";
 import { Card } from "@/components/ui/card";
@@ -15,8 +15,13 @@ export const Route = createFileRoute("/week")({
 });
 
 function DayColumn({ date }: { date: string }) {
-  const problems = useStore((s) => s.problems.filter((p) => p.scheduledDate === date));
-  const { isOver, setNodeRef } = useDroppable({ id: `col-${date}`, data: { date } });
+  const allProblems = useStore((s) => s.problems);
+  const problems = useMemo(
+    () => allProblems.filter((p) => p.scheduledDate === date),
+    [allProblems, date],
+  );
+  const dropData = useMemo(() => ({ date }), [date]);
+  const { isOver, setNodeRef } = useDroppable({ id: `col-${date}`, data: dropData });
   const parsed = parseISO(date);
   const isToday = date === format(new Date(), "yyyy-MM-dd");
 
