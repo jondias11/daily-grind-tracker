@@ -15,6 +15,14 @@ function SettingsPage() {
   const setTargets = useStore((s) => s.setTargets);
   const reset = useStore((s) => s.reset);
 
+  const fields: { key: keyof typeof targets; label: string }[] = [
+    { key: "dsaTheory", label: "DSA Theory" },
+    { key: "dsaRecap", label: "DSA Recap" },
+    { key: "ml", label: "ML" },
+    { key: "dbms", label: "DBMS" },
+    { key: "project", label: "Project" },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <AppNav />
@@ -22,38 +30,24 @@ function SettingsPage() {
         <h1 className="text-xl font-semibold">Settings</h1>
         <Card className="p-5 space-y-4">
           <h2 className="font-medium">Daily targets (minutes)</h2>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-1.5">
-              <Label>DSA Theory</Label>
-              <Input
-                type="number"
-                value={targets.dsaTheory}
-                onChange={(e) => setTargets({ dsaTheory: Number(e.target.value) || 0 })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>ML</Label>
-              <Input
-                type="number"
-                value={targets.ml}
-                onChange={(e) => setTargets({ ml: Number(e.target.value) || 0 })}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Project</Label>
-              <Input
-                type="number"
-                value={targets.project}
-                onChange={(e) => setTargets({ project: Number(e.target.value) || 0 })}
-              />
-            </div>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {fields.map((f) => (
+              <div key={f.key} className="space-y-1.5">
+                <Label>{f.label}</Label>
+                <Input
+                  type="number"
+                  value={targets[f.key]}
+                  onChange={(e) => setTargets({ [f.key]: Number(e.target.value) || 0 })}
+                />
+              </div>
+            ))}
           </div>
         </Card>
         <Card className="p-5 space-y-3">
           <h2 className="font-medium">Data</h2>
           <p className="text-sm text-muted-foreground">
-            Your progress is saved in this browser. Reset restores the original schedule from the
-            spreadsheet and clears all logs.
+            Your progress syncs across all devices via Lovable Cloud. Reset restores the original
+            schedule from the spreadsheet and clears all logs (on every device).
           </p>
           <Button
             variant="destructive"
