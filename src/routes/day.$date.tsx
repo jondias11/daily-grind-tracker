@@ -77,9 +77,11 @@ function DayPage() {
         <DndContext onDragEnd={onDragEnd}>
           <DailyProgress date={date} />
 
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             <BlockTracker date={date} label="DSA Theory" keyName="dsaTheoryMin" targetMin={targets.dsaTheory} />
+            <BlockTracker date={date} label="DSA Recap" keyName="dsaRecapMin" targetMin={targets.dsaRecap} />
             <BlockTracker date={date} label="ML" keyName="mlMin" targetMin={targets.ml} />
+            <BlockTracker date={date} label="DBMS" keyName="dbmsMin" targetMin={targets.dbms} />
             <BlockTracker date={date} label="Project" keyName="projectMin" targetMin={targets.project} />
           </div>
 

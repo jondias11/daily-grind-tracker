@@ -11,12 +11,15 @@ export function DailyProgress({ date }: { date: string }) {
   const problemTargetMin = dayProblems.reduce((a, p) => a + p.estMin, 0);
   const problemDoneMin = dayProblems.filter((p) => p.completed).reduce((a, p) => a + p.estMin, 0);
 
-  const totalTarget = problemTargetMin + targets.dsaTheory + targets.ml + targets.project;
+  const totalTarget =
+    problemTargetMin + targets.dsaTheory + targets.ml + targets.project + targets.dbms + targets.dsaRecap;
   const totalDone =
     problemDoneMin +
     Math.min(targets.dsaTheory, log?.dsaTheoryMin ?? 0) +
     Math.min(targets.ml, log?.mlMin ?? 0) +
-    Math.min(targets.project, log?.projectMin ?? 0);
+    Math.min(targets.project, log?.projectMin ?? 0) +
+    Math.min(targets.dbms, log?.dbmsMin ?? 0) +
+    Math.min(targets.dsaRecap, log?.dsaRecapMin ?? 0);
 
   const pct = totalTarget === 0 ? 0 : (totalDone / totalTarget) * 100;
   const hoursDone = (totalDone / 60).toFixed(1);
