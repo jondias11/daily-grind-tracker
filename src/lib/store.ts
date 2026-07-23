@@ -16,7 +16,7 @@ export type Problem = {
 
 export type DailyLog = {
   dsaTheoryMin: number;
-  mlMin: number;
+  oopsMin: number;
   projectMin: number;
   dbmsMin: number;
   dsaRecapMin: number;
@@ -24,7 +24,7 @@ export type DailyLog = {
 
 export type Targets = {
   dsaTheory: number;
-  ml: number;
+  oops: number;
   project: number;
   dbms: number;
   dsaRecap: number;
@@ -34,22 +34,42 @@ export type SyncStatus = "idle" | "syncing" | "synced" | "offline";
 
 const DEFAULT_TARGETS: Targets = {
   dsaTheory: 45,
-  ml: 60,
+  oops: 30,
   project: 60,
-  dbms: 60,
+  dbms: 45,
   dsaRecap: 30,
 };
 
 const EMPTY_LOG: DailyLog = {
   dsaTheoryMin: 0,
-  mlMin: 0,
+  oopsMin: 0,
   projectMin: 0,
   dbmsMin: 0,
   dsaRecapMin: 0,
 };
 
-function normalizeLog(l: Partial<DailyLog> | undefined): DailyLog {
-  return { ...EMPTY_LOG, ...(l ?? {}) };
+function normalizeLog(l: Partial<DailyLog> & { mlMin?: number } | undefined): DailyLog {
+  const base = { ...EMPTY_LOG, ...(l ?? {}) };
+  // Migrate legacy `mlMin` → `oopsMin` if present and oopsMin unset
+  if (l && typeof l.mlMin === "number" && !l.oopsMin) base.oopsMin = l.mlMin;
+  return {
+    dsaTheoryMin: base.dsaTheoryMin,
+    oopsMin: base.oopsMin,
+    projectMin: base.projectMin,
+    dbmsMin: base.dbmsMin,
+    dsaRecapMin: base.dsaRecapMin,
+  };
+}
+
+function normalizeTargets(t: Partial<Targets> & { ml?: number } | undefined): Targets {
+  const merged = { ...DEFAULT_TARGETS, ...(t ?? {}) };
+  return {
+    dsaTheory: merged.dsaTheory,
+    oops: merged.oops,
+    project: merged.project,
+    dbms: merged.dbms,
+    dsaRecap: merged.dsaRecap,
+  };
 }
 
 type State = {
@@ -111,13 +131,13 @@ export const useStore = create<State>()(
           daily: Object.fromEntries(
             Object.entries(data.daily ?? {}).map(([k, v]) => [k, normalizeLog(v)]),
           ),
-          targets: { ...DEFAULT_TARGETS, ...(data.targets ?? {}) },
+          targets: normalizeTargets(data.targets),
           _remoteUpdatedAt: updatedAt,
         }),
       _markHydrated: () => set({ _hydrated: true }),
     }),
     {
-      name: "tracker-store-v2",
+      name: "tracker-store-v3",
       partialize: (s) => ({
         problems: s.problems,
         daily: s.daily,
@@ -179,7 +199,6 @@ export async function initCloudSync() {
       applyingRemote = false;
       useStore.getState()._setSyncStatus("synced");
     } else {
-      // First run — push current local state up
       await pushToCloud();
     }
   } catch (e) {
@@ -189,7 +208,6 @@ export async function initCloudSync() {
 
   useStore.getState()._markHydrated();
 
-  // Subscribe to changes from other devices
   supabase
     .channel("tracker_state_changes")
     .on(
@@ -211,7 +229,6 @@ export async function initCloudSync() {
     )
     .subscribe();
 
-  // Push on any local mutation
   useStore.subscribe((state, prev) => {
     if (applyingRemote) return;
     if (

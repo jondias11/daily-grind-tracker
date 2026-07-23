@@ -18,7 +18,7 @@ function SettingsPage() {
   const fields: { key: keyof typeof targets; label: string }[] = [
     { key: "dsaTheory", label: "DSA Theory" },
     { key: "dsaRecap", label: "DSA Recap" },
-    { key: "ml", label: "ML" },
+    { key: "oops", label: "OOPs" },
     { key: "dbms", label: "DBMS" },
     { key: "project", label: "Project" },
   ];
